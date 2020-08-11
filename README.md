@@ -1,2 +1,1 @@
-SimpleMVVMArchitecture without using DI
-SimpleMVVMArchitecture without using DataBinding
+SimpleMVVMArchitecture without using DI and DataBinding
