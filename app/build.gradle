@@ -15,10 +15,28 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "SimpleMVVMFlavors"
+    productFlavors {
+        DEV {
+            dimension "SimpleMVVMFlavors"
+            resValue("string", "flavored_app_name", "DEV-Simple-MVVM")
+            buildConfigField("String", "BASE_URL", "\"https://dl.dropboxusercontent.com/\"")
+        }
+        PROD {
+            dimension "SimpleMVVMFlavors"
+            resValue("string", "flavored_app_name", "Simple-MVVM")
+            buildConfigField("String", "BASE_URL", "\"https://dl.dropboxusercontent.com/\"")
         }
     }
 }
@@ -33,4 +51,12 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    // retrofit dependency for api calling
+    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.1.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.1.0'
+
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
 }
