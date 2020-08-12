@@ -11,6 +11,6 @@ import io.reactivex.Observable
 interface RestApi {
 
      @GET("s/2iodh4vg0eortkl/facts.json")
-     fun getCanadaDetails():Observable<Canada>
+     fun fetchDetails():Observable<Canada>
 
 }

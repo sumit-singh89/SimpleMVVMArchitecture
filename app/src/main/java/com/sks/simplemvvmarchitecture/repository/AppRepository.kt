@@ -10,12 +10,12 @@ import io.reactivex.Observable
  */
 
 
-object AppRepository {
+class AppRepository {
 
     private  var restApi: RestApi = RetrofitService.createService(RestApi::class.java)
 
-    fun getCanadaDetails(): Observable<Canada> {
-        return restApi.getCanadaDetails()
+    fun fetchDetails(): Observable<Canada> {
+        return restApi.fetchDetails()
     }
 }
 

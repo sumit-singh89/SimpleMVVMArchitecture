@@ -12,17 +12,17 @@ import io.reactivex.schedulers.Schedulers
 /**
  * @author  Sumit Singh on 8/12/2020.
  */
-class HomeFragmentViewModel:ViewModel() {
-    private var getResult: MutableLiveData<Canada> = MutableLiveData()
+class HomeFragmentViewModel(private val appRepository: AppRepository):ViewModel() {
+     var getResult: MutableLiveData<Canada> = MutableLiveData()
 
-    private var errorResult: MutableLiveData<String> = MutableLiveData()
+     var errorResult: MutableLiveData<String> = MutableLiveData()
 
     fun getError(): LiveData<String> = errorResult
-    fun getCanadaDetails(): LiveData<Canada> = getResult
+    fun getDetails(): LiveData<Canada> = getResult
 
-    fun callCanadaDetailsApi() {
-        AppRepository.run {
-            getCanadaDetails()
+    fun fetchDetails() {
+        appRepository.run {
+            fetchDetails()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
