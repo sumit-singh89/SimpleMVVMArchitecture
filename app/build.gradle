@@ -54,11 +54,17 @@ dependencies {
     testImplementation "junit:junit:$versions.junit"
     androidTestImplementation "androidx.test.ext:junit:$versions.androix_ext_junit"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.androix_espresso_core"
+    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$versions.androix_espresso_core"
     testImplementation "org.mockito:mockito-core:$versions.mockito"
     testImplementation "com.nhaarman:mockito-kotlin-kt1.1:$versions.mockito_nhaarman_version"
     testImplementation "org.mockito:mockito-inline:$versions.mockito_inline"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines_test"
     testImplementation "androidx.arch.core:core-testing:$versions.androidx_core_testing"
+    implementation "com.android.support.test.espresso:espresso-idling-resource:$versions.espresso"
+
+    // Android runner and rules support
+    androidTestImplementation "androidx.test:rules:$versions.androix_test_rules"
+    androidTestImplementation "androidx.test:runner:$versions.androix_test_rules"
 
     // Android Kotlin Extension
     implementation "androidx.core:core-ktx:$versions.androidKTXVersion"

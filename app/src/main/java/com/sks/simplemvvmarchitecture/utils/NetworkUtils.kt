@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 
+// Purpose of this class is to check network connectivity
 /**
  * @author  Sumit Singh on 8/11/2020.
  */

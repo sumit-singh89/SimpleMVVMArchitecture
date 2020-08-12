@@ -16,6 +16,7 @@ import com.sks.simplemvvmarchitecture.view.ui.modules.base.BaseFragment
 import com.sks.simplemvvmarchitecture.view.ui.modules.main.adapter.RecyclerViewAdapter
 import com.sks.simplemvvmarchitecture.viewmodel.factory.MyViewModelFactory
 import com.sks.simplemvvmarchitecture.viewmodel.home.HomeFragmentViewModel
+import utils.EspressoIdlingResource
 import kotlinx.android.synthetic.main.fragment_home.*
 
 /**
@@ -49,6 +50,7 @@ class HomeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
         // observer to handle the success response of api
         viewModel.getDetails().observe(this@HomeFragment.activity!!, Observer {
+            EspressoIdlingResource.decrement()
             if (swipeLayout.isRefreshing) {
                 swipeLayout.isRefreshing = false
             } else {
@@ -60,6 +62,7 @@ class HomeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
         // observer to handle the error response of api
         viewModel.getError().observe(this@HomeFragment.activity!!, Observer {
+            EspressoIdlingResource.decrement()
             if (swipeLayout.isRefreshing) {
                 swipeLayout.isRefreshing = false
             } else {
@@ -74,7 +77,8 @@ class HomeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
         if (NetworkUtils.isNetworkConnected(activity!!)) {
             if (!swipeLayout.isRefreshing)
                 showLoading()// do not show custom loader if swipe to refresh called
-            viewModel.fetchDetails()
+               EspressoIdlingResource.increment()
+              viewModel.fetchDetails()
         } else {
             showToast(getString(R.string.error_something_went_wrong))// if no internet found show toast
         }
