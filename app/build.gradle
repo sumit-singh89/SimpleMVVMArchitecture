@@ -11,8 +11,11 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 
     buildTypes {
@@ -21,16 +24,62 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "SimpleMVVMFlavors"
+    productFlavors {
+        DEV {
+            dimension "SimpleMVVMFlavors"
+            resValue("string", "flavored_app_name", "DEV-Simple-MVVM")
+            buildConfigField("String", "BASE_URL", "\"https://dl.dropboxusercontent.com/\"")
+        }
+        PROD {
+            dimension "SimpleMVVMFlavors"
+            resValue("string", "flavored_app_name", "Simple-MVVM")
+            buildConfigField("String", "BASE_URL", "\"https://dl.dropboxusercontent.com/\"")
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.1'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin_version"
+    implementation "androidx.core:core-ktx:$versions.anrdoix_core"
+    implementation "androidx.appcompat:appcompat:$versions.androidx_appcompat"
+    implementation "androidx.constraintlayout:constraintlayout:$versions.androidx_constraintlayout"
+    implementation "androidx.recyclerview:recyclerview:$versions.androidx_reycler"
+    implementation "androidx.navigation:navigation-fragment-ktx:$versions.androidx_navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$versions.androidx_navigation"
 
+    // unit and ui test dependencies
+    testImplementation "junit:junit:$versions.junit"
+    androidTestImplementation "androidx.test.ext:junit:$versions.androix_ext_junit"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.androix_espresso_core"
+    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$versions.androix_espresso_core"
+    testImplementation "org.mockito:mockito-core:$versions.mockito"
+    testImplementation "com.nhaarman:mockito-kotlin-kt1.1:$versions.mockito_nhaarman_version"
+    testImplementation "org.mockito:mockito-inline:$versions.mockito_inline"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines_test"
+    testImplementation "androidx.arch.core:core-testing:$versions.androidx_core_testing"
+    implementation "com.android.support.test.espresso:espresso-idling-resource:$versions.espresso"
+
+    // Android runner and rules support
+    androidTestImplementation "androidx.test:rules:$versions.androix_test_rules"
+    androidTestImplementation "androidx.test:runner:$versions.androix_test_rules"
+
+    // Android Kotlin Extension
+    implementation "androidx.core:core-ktx:$versions.androidKTXVersion"
+
+    // Retrofit dependency for api calling
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava:$versions.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$versions.retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit"
+    implementation "com.squareup.okhttp3:okhttp:$versions.retrofit_okhttp"
+    implementation "com.squareup.okhttp3:logging-interceptor:$versions.retrofit_okhttp_interceptor"
+
+    implementation "androidx.lifecycle:lifecycle-extensions:$versions.androix_lifecylce_extensions"
+    implementation "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
+
+    // glide dependency for image loading
+    implementation "com.github.bumptech.glide:glide:$versions.glide"
 }

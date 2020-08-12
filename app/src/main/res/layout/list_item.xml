@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/imageArrow"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_2"
+            android:text="@string/no_title"
+            android:textColor="@color/colorDarkBlue"
+            android:textSize="@dimen/sp_22"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/content_description"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/imageView"
+                android:padding="@dimen/dp_2"
+                android:text="@string/demo_description"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/sp_16" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/content_description"
+        android:src="@drawable/ic_fwd_arrow_right_24" />
+
+
+</RelativeLayout>
