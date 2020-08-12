@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">SimpleMVVMArchitecture</string>
+    <string name="error_timeout">Looks like the system is taking too long to respond, please try again later.</string>
+    <string name="error_unknown_host">Internet connection is slow, please try again later.</string>
+    <string name="error_something_went_wrong">Something went wrong,please try again later.</string>
+    <string name="error_no_internet">No internet connection found, please try again later.</string>
+    <string name="content_description">Image View</string>
+    <string name="error_no_data">No data found.</string>
+    <string name="demo_description">No Description</string>
+    <string name="no_title">No Title</string>
+    <string name="title_home">Home</string>
 </resources>
