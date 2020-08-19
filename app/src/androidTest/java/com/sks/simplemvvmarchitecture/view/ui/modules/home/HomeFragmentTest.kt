@@ -14,7 +14,6 @@ import com.sks.simplemvvmarchitecture.R
 import com.sks.simplemvvmarchitecture.utils.EspressoIdlingResourceRule
 import com.sks.simplemvvmarchitecture.utils.RecyclerViewMatcher
 import com.sks.simplemvvmarchitecture.view.ui.modules.main.MainActivity
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,13 +31,6 @@ class HomeFragmentTest {
 
     @get: Rule
     val espressoIdlingResourceRule = EspressoIdlingResourceRule()
-
-
-    @Before
-    fun setUp() {
-
-    }
-
 
     @Test
     fun testRecyclerItemViewVisibility() {

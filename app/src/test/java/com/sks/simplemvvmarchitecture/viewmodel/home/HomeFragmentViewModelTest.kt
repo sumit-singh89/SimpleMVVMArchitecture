@@ -5,22 +5,17 @@ import androidx.lifecycle.Observer
 import com.nhaarman.mockito_kotlin.*
 import com.sks.simplemvvmarchitecture.model.Canada
 import com.sks.simplemvvmarchitecture.repository.AppRepository
-import com.sks.simplemvvmarchitecture.repository.api.RestApi
 import com.sks.simplemvvmarchitecture.utils.RxSchedulerRule
-import com.sks.simplemvvmarchitecture.utils.TestCoroutineRule
 import io.reactivex.Observable
-import io.reactivex.Single
-import junit.framework.Assert.*
+import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
