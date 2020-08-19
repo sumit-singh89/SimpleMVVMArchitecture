@@ -30,5 +30,5 @@ This is a sample app that is supposed to display list of data with title, descri
 ## Ui testing
 - Written Ui test cases for recycler view
 
-
-
+## What's New
+- Add offline cache implementation for no internet scenario
