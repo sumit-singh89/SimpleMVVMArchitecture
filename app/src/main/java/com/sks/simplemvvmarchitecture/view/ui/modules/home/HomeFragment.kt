@@ -49,48 +49,58 @@ class HomeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
         viewModel = ViewModelProvider(this,MyViewModelFactory(AppRepository())).get(HomeFragmentViewModel::class.java)
 
         // observer to handle the success response of api
-        viewModel.getDetails().observe(this@HomeFragment.activity!!, Observer {
-            EspressoIdlingResource.decrement()
-            if (swipeLayout.isRefreshing) {
-                swipeLayout.isRefreshing = false
-            } else {
-                hideLoading()
-            }
-            it ?: return@Observer
-            updateUI(it)
-        })
+        this@HomeFragment.activity?.let {
+            viewModel.getDetails().observe(it, Observer {
+                EspressoIdlingResource.decrement()
+                if (swipeLayout.isRefreshing) {
+                    swipeLayout.isRefreshing = false
+                } else {
+                    hideLoading()
+                }
+                it ?: return@Observer
+                updateUI(it)
+            })
+        }
 
         // observer to handle the error response of api
-        viewModel.getError().observe(this@HomeFragment.activity!!, Observer {
-            EspressoIdlingResource.decrement()
-            if (swipeLayout.isRefreshing) {
-                swipeLayout.isRefreshing = false
-            } else {
-                hideLoading()
-            }
-            showToast(it)
-        })
+        this@HomeFragment.activity?.let {
+            viewModel.getError().observe(it, Observer {
+                EspressoIdlingResource.decrement()
+                if (swipeLayout.isRefreshing) {
+                    swipeLayout.isRefreshing = false
+                } else {
+                    hideLoading()
+                }
+                showToast(it)
+            })
+        }
     }
 
     // make a api call here
     private fun callGetCanadaDetailsAPI() {
-        if (NetworkUtils.isNetworkConnected(activity!!)) {
-            if (!swipeLayout.isRefreshing)
-                showLoading()// do not show custom loader if swipe to refresh called
-               EspressoIdlingResource.increment()
-              viewModel.fetchDetails()
-        } else {
-            showToast(getString(R.string.error_something_went_wrong))// if no internet found show toast
+        activity?.let {
+            if (NetworkUtils.isNetworkConnected(it)) {
+                if (!swipeLayout.isRefreshing)
+                    showLoading()// do not show custom loader if swipe to refresh called
+                EspressoIdlingResource.increment()
+                viewModel.fetchDetails()
+            } else {
+                showToast(getString(R.string.error_something_went_wrong))// if no internet found show toast
+            }
         }
     }
 
     // update your ui elements here
     private fun updateUI(response: Canada) = if (!response.rows.isNullOrEmpty()) {
-        activity!!.title = response.title
+        activity?.let {
+            it.title = response.title
+        }
         val linearLayoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = linearLayoutManager
-        val mAdapter = RecyclerViewAdapter(activity!!, response.rows)
-        recyclerView.adapter = mAdapter
+        activity?.let{
+            val mAdapter = RecyclerViewAdapter(it, response.rows)
+            recyclerView.adapter = mAdapter
+        }
     } else {
         showToast(getString(R.string.error_no_data))
     }
