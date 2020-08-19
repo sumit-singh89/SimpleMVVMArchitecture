@@ -8,17 +8,18 @@ import android.content.res.Resources
  */
 class MyApplication : Application() {
 
+
     override fun onCreate() {
         super.onCreate()
         mContext = this
+
     }
 
     companion object {
-        var mContext: MyApplication? = null
+        lateinit var mContext: MyApplication
         fun getResources(): Resources {
-            return mContext!!.resources
+            return mContext.resources
         }
-
     }
 
 }

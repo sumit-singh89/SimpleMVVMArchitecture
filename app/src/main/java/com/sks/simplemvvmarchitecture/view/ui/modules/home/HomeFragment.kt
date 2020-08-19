@@ -11,13 +11,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.sks.simplemvvmarchitecture.R
 import com.sks.simplemvvmarchitecture.model.Canada
 import com.sks.simplemvvmarchitecture.repository.AppRepository
-import com.sks.simplemvvmarchitecture.utils.NetworkUtils
 import com.sks.simplemvvmarchitecture.view.ui.modules.base.BaseFragment
 import com.sks.simplemvvmarchitecture.view.ui.modules.main.adapter.RecyclerViewAdapter
 import com.sks.simplemvvmarchitecture.viewmodel.factory.MyViewModelFactory
 import com.sks.simplemvvmarchitecture.viewmodel.home.HomeFragmentViewModel
-import utils.EspressoIdlingResource
 import kotlinx.android.synthetic.main.fragment_home.*
+import utils.EspressoIdlingResource
 
 /**
  * @author  Sumit Singh on 8/12/2020.
@@ -46,7 +45,10 @@ class HomeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
 
     override fun initObservers() {
-        viewModel = ViewModelProvider(this,MyViewModelFactory(AppRepository())).get(HomeFragmentViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            MyViewModelFactory(AppRepository())
+        ).get(HomeFragmentViewModel::class.java)
 
         // observer to handle the success response of api
         this@HomeFragment.activity?.let {
@@ -78,17 +80,12 @@ class HomeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     // make a api call here
     private fun callGetCanadaDetailsAPI() {
-        activity?.let {
-            if (NetworkUtils.isNetworkConnected(it)) {
-                if (!swipeLayout.isRefreshing)
-                    showLoading()// do not show custom loader if swipe to refresh called
-                EspressoIdlingResource.increment()
-                viewModel.fetchDetails()
-            } else {
-                showToast(getString(R.string.error_something_went_wrong))// if no internet found show toast
-            }
-        }
+        if (!swipeLayout.isRefreshing)
+            showLoading()// do not show custom loader if swipe to refresh called
+        EspressoIdlingResource.increment()
+        viewModel.fetchDetails()
     }
+
 
     // update your ui elements here
     private fun updateUI(response: Canada) = if (!response.rows.isNullOrEmpty()) {
@@ -97,7 +94,7 @@ class HomeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
         }
         val linearLayoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = linearLayoutManager
-        activity?.let{
+        activity?.let {
             val mAdapter = RecyclerViewAdapter(it, response.rows)
             recyclerView.adapter = mAdapter
         }
