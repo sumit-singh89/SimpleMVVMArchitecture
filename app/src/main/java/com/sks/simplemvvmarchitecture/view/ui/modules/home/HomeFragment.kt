@@ -11,13 +11,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.sks.simplemvvmarchitecture.R
 import com.sks.simplemvvmarchitecture.model.Canada
 import com.sks.simplemvvmarchitecture.repository.AppRepository
-import com.sks.simplemvvmarchitecture.utils.NetworkUtils
 import com.sks.simplemvvmarchitecture.view.ui.modules.base.BaseFragment
 import com.sks.simplemvvmarchitecture.view.ui.modules.main.adapter.RecyclerViewAdapter
 import com.sks.simplemvvmarchitecture.viewmodel.factory.MyViewModelFactory
 import com.sks.simplemvvmarchitecture.viewmodel.home.HomeFragmentViewModel
-import utils.EspressoIdlingResource
 import kotlinx.android.synthetic.main.fragment_home.*
+import utils.EspressoIdlingResource
 
 /**
  * @author  Sumit Singh on 8/12/2020.
@@ -46,51 +45,59 @@ class HomeFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
 
     override fun initObservers() {
-        viewModel = ViewModelProvider(this,MyViewModelFactory(AppRepository())).get(HomeFragmentViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            MyViewModelFactory(AppRepository())
+        ).get(HomeFragmentViewModel::class.java)
 
         // observer to handle the success response of api
-        viewModel.getDetails().observe(this@HomeFragment.activity!!, Observer {
-            EspressoIdlingResource.decrement()
-            if (swipeLayout.isRefreshing) {
-                swipeLayout.isRefreshing = false
-            } else {
-                hideLoading()
-            }
-            it ?: return@Observer
-            updateUI(it)
-        })
+        this@HomeFragment.activity?.let {
+            viewModel.getDetails().observe(it, Observer {
+                EspressoIdlingResource.decrement()
+                if (swipeLayout.isRefreshing) {
+                    swipeLayout.isRefreshing = false
+                } else {
+                    hideLoading()
+                }
+                it ?: return@Observer
+                updateUI(it)
+            })
+        }
 
         // observer to handle the error response of api
-        viewModel.getError().observe(this@HomeFragment.activity!!, Observer {
-            EspressoIdlingResource.decrement()
-            if (swipeLayout.isRefreshing) {
-                swipeLayout.isRefreshing = false
-            } else {
-                hideLoading()
-            }
-            showToast(it)
-        })
+        this@HomeFragment.activity?.let {
+            viewModel.getError().observe(it, Observer {
+                EspressoIdlingResource.decrement()
+                if (swipeLayout.isRefreshing) {
+                    swipeLayout.isRefreshing = false
+                } else {
+                    hideLoading()
+                }
+                showToast(it)
+            })
+        }
     }
 
     // make a api call here
     private fun callGetCanadaDetailsAPI() {
-        if (NetworkUtils.isNetworkConnected(activity!!)) {
-            if (!swipeLayout.isRefreshing)
-                showLoading()// do not show custom loader if swipe to refresh called
-               EspressoIdlingResource.increment()
-              viewModel.fetchDetails()
-        } else {
-            showToast(getString(R.string.error_something_went_wrong))// if no internet found show toast
-        }
+        if (!swipeLayout.isRefreshing)
+            showLoading()// do not show custom loader if swipe to refresh called
+        EspressoIdlingResource.increment()
+        viewModel.fetchDetails()
     }
+
 
     // update your ui elements here
     private fun updateUI(response: Canada) = if (!response.rows.isNullOrEmpty()) {
-        activity!!.title = response.title
+        activity?.let {
+            it.title = response.title
+        }
         val linearLayoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = linearLayoutManager
-        val mAdapter = RecyclerViewAdapter(activity!!, response.rows)
-        recyclerView.adapter = mAdapter
+        activity?.let {
+            val mAdapter = RecyclerViewAdapter(it, response.rows)
+            recyclerView.adapter = mAdapter
+        }
     } else {
         showToast(getString(R.string.error_no_data))
     }
