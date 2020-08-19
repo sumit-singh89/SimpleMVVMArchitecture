@@ -4,9 +4,9 @@ package com.sks.simplemvvmarchitecture.repository.api
  * @author  Sumit Singh on 8/11/2020.
  */
 
+import com.google.gson.GsonBuilder
 import com.sks.simplemvvmarchitecture.MyApplication
 import com.sks.simplemvvmarchitecture.utils.AppConstants
-import com.sks.simplemvvmarchitecture.utils.NetworkUtils
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -20,16 +20,16 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitService {
 
-
-    private const val HEADER_CACHE_CONTROL = "Cache-Control"
-    private const val HEADER_PRAGMA = "Pragma"
-
     // specify a cache size 5 mb
     private const val cacheSize = (5 * 1024 * 1024).toLong()
 
+    var gson = GsonBuilder()
+        .setLenient()
+        .create()
+
     private val retrofit = Retrofit.Builder()
         .baseUrl(AppConstants.BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(getOkHttpBuilder().build()).build()
 
@@ -47,50 +47,56 @@ object RetrofitService {
             .cache(mCache)
     }
 
-    private fun provideCacheInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            val response: Response = chain.proceed(chain.request())
-            val cacheControl: CacheControl =
-                if (NetworkUtils.isNetworkConnected(MyApplication.mContext)) {
-                    CacheControl.Builder()
-                        .maxAge(0, TimeUnit.SECONDS)
-                        .build()
-                } else {
-                    /*
-                    *  If there is no Internet, get the cache that was stored 7 days ago.
-                    *  If the cache is older than 7 days, then discard it,
-                    *  and indicate an error in fetching the response.
-                    *  The 'max-stale' attribute is responsible for this behavior.
-                    *  The 'only-if-cached' attribute indicates to not retrieve new data; fetch the cache only instead.
-                    */
-                    CacheControl.Builder()
-                        .maxStale(7, TimeUnit.DAYS) // offline
-                        .build()
-                }
-            response.newBuilder()
-                .removeHeader(HEADER_PRAGMA)
-                .removeHeader(HEADER_CACHE_CONTROL)
-                .header(HEADER_CACHE_CONTROL, cacheControl.toString())
-                .build()
-        }
-    }
-
     private fun provideOfflineCacheInterceptor(): Interceptor {
         return Interceptor { chain ->
-            var request: Request = chain.request()
-            if (!NetworkUtils.isNetworkConnected(MyApplication.mContext)) {
+            try {
+                chain.proceed(chain.request())
+            } catch (e: Exception) {
+                /*
+                *  If there is no Internet, get the cache that was stored 1 days ago.
+                *  If the cache is older than 1 days, then discard it,
+                *  and indicate an error in fetching the response.
+                *  The 'max-stale' attribute is responsible for this behavior.
+                *  The 'only-if-cached' attribute indicates to not retrieve new data; fetch the cache only instead.
+                */
                 val cacheControl = CacheControl.Builder()
-                    .maxStale(7, TimeUnit.DAYS)
+                    .onlyIfCached()
+                    .maxStale(1, TimeUnit.DAYS)
                     .build()
-                request = request.newBuilder()
-                    .removeHeader(HEADER_PRAGMA)
-                    .removeHeader(HEADER_CACHE_CONTROL)
+
+                val offlineRequest = chain.request().newBuilder()
                     .cacheControl(cacheControl)
                     .build()
+                chain.proceed(offlineRequest)
             }
-            chain.proceed(request)
         }
     }
 
+
+    private fun provideCacheInterceptor(): Interceptor {
+        return Interceptor { chain ->
+            var request = chain.request()
+            val originalResponse = chain.proceed(request)
+            val cacheControl = originalResponse.header("Cache-Control")
+
+            if (cacheControl == null ||
+                cacheControl.contains("no-store") ||
+                cacheControl.contains("no-cache") ||
+                cacheControl.contains("must-revalidate") ||
+                cacheControl.contains("max-stale=0")) {
+
+                val cc = CacheControl.Builder()
+                    .maxStale(1, TimeUnit.DAYS)
+                    .build()
+                request = request.newBuilder()
+                    .cacheControl(cc)
+                    .build()
+                chain.proceed(request)
+
+            } else {
+                originalResponse
+            }
+        }
+    }
 
 }
